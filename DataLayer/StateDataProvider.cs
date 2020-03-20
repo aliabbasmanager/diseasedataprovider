@@ -1,42 +1,60 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using diseasedataprovider.Interfaces;
 using DiseaseDataProvider.Interfaces;
 
 namespace DiseaseDataProvider.DataLayer
 {
     public class StateDataProvider : IStateDataProvider
     {
-        public int get_total_confirmed_cases_by_state(string state_name)
+        private IDataHelper _sqlDataHelper;
+        public StateDataProvider(IDataHelper sqlDataHelper)
+        {
+            _sqlDataHelper = sqlDataHelper;
+        }
+ 
+        public int get_total_confirmed_cases_ind_by_state(string state_name)
         {
             var count = 0;
             try
             {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-
-                builder.DataSource = "diseasedata.database.windows.net";
-                builder.UserID = "superuser";
-                builder.Password = "P@ssw0rd";
-                builder.InitialCatalog = "corona";
-
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                StringBuilder sb = new StringBuilder();
+                sb.Append("select state_name, sum(confirmed_cases_ind) as total_cases from covid19_india group by state_name having state_name = '");
+                sb.Append(state_name);
+                sb.Append("'");
+                String sql = sb.ToString();
+                var case_data = _sqlDataHelper.executeDataQuery(sql);
+                if (case_data.Tables[0].Rows.Count < 1)
                 {
-                    connection.Open();
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("select state_name, sum(countPerDay) as total_cases from covid19_india group by state_name having state_name = '");
-                    sb.Append(state_name);
-                    sb.Append("'");
-                    String sql = sb.ToString();
-
-                    using (SqlCommand command = new SqlCommand(sql, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            reader.Read();
-                            count = reader.GetInt32(1);
-                        }
-                    }
+                    throw new ArgumentException("State not found");
                 }
+                count = Convert.ToInt32(case_data.Tables[0].Rows[0][1]);
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            return count;
+        }
+
+        public int get_total_confirmed_cases_int_by_state(string state_name)
+        {
+            var count = 0;
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("select state_name, sum(confirmed_cases_int) as total_cases from covid19_india group by state_name having state_name = '");
+                sb.Append(state_name);
+                sb.Append("'");
+                String sql = sb.ToString();
+                var case_data = _sqlDataHelper.executeDataQuery(sql);
+                if (case_data.Tables[0].Rows.Count < 1)
+                {
+                    throw new ArgumentException("State not found");
+                }
+                count = Convert.ToInt32(case_data.Tables[0].Rows[0][1]);
             }
             catch (SqlException e)
             {
