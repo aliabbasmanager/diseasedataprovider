@@ -37,7 +37,17 @@ namespace diseasedataprovider
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Disease Data Provider", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Disease Data Provider",
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Ali Abbas Manager",
+                        Email = "aliabbas.manager89@gmail.com",
+                        Url = new Uri("https://www.linkedin.com/in/aliabbasmanager/"),
+                    },
+                });
             });
         }
 
@@ -58,7 +68,7 @@ namespace diseasedataprovider
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "India API V1");
                 c.RoutePrefix = string.Empty;
             });
 
