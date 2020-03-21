@@ -168,7 +168,7 @@ namespace DiseaseDataProvider.DataLayer
 
                 foreach (DataRow row in historical_data.Tables[0].Rows)
                 {
-                    data.Add( Convert.ToDateTime(row[0]).Date.ToString("d"), row[1].ToString());
+                    data.Add(Convert.ToDateTime(row[0]).Date.ToString("d"), row[1].ToString());
                 }
             }
             catch (SqlException e)
@@ -178,7 +178,7 @@ namespace DiseaseDataProvider.DataLayer
             return data;
         }
 
-         public Dictionary<string, string> get_cumulative_historical_data_per_state(string state_name)
+        public Dictionary<string, string> get_cumulative_historical_data_per_state(string state_name)
         {
             Dictionary<string, string> data = new Dictionary<string, string>();
             try
@@ -198,7 +198,7 @@ namespace DiseaseDataProvider.DataLayer
 
                 foreach (DataRow row in historical_data.Tables[0].Rows)
                 {
-                    data.Add( Convert.ToDateTime(row[0]).Date.ToString("d"), row[1].ToString());
+                    data.Add(Convert.ToDateTime(row[0]).Date.ToString("d"), row[1].ToString());
                 }
             }
             catch (SqlException e)
@@ -207,6 +207,39 @@ namespace DiseaseDataProvider.DataLayer
             }
             return data;
         }
+        public Dictionary<string, string> get_cases_for_date_range_per_state(string state_name, DateTime start_date, DateTime end_date)
+        {
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("select date, confirmed_cases_ind + confirmed_cases_int  from covid19_india where CONVERT(date, date) between '");
+                sb.Append(start_date.Date.ToString("d"));
+                sb.Append("'");
+                sb.Append(" and '");
+                sb.Append(end_date.Date.ToString("d"));
+                sb.Append("' and state_name='");
+                sb.Append(state_name);
+                sb.Append("'");
 
+                String query = sb.ToString();
+
+                var historical_data = _sqlDataHelper.executeDataQuery(query);
+                if (historical_data.Tables[0].Rows.Count < 1)
+                {
+                    throw new DataException("Data Not Found");
+                }
+
+                foreach (DataRow row in historical_data.Tables[0].Rows)
+                {
+                    data.Add(Convert.ToDateTime(row[0]).Date.ToString("d"), row[1].ToString());
+                }
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            return data;
+        }
     }
 }

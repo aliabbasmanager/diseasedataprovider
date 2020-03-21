@@ -12,5 +12,6 @@ namespace DiseaseDataProvider.Interfaces
         Dictionary<string, string> get_current_case_count_all_states();
         Dictionary<string, string> get_historical_data_per_state(string state_name);
         Dictionary<string, string> get_cumulative_historical_data_per_state(string state_name);
+        Dictionary<string, string> get_cases_for_date_range_per_state(string state_name, DateTime start_date, DateTime end_date);
     }
 }
