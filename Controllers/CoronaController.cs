@@ -139,7 +139,7 @@ namespace diseasedataprovider.Controllers
         }
 
         /// <summary>
-        /// Gets Total Cases in India on a particular date For a particular state. Date Format mm/dd/yyyy
+        /// Gets Total Cases in India on a particular date for a particular state. Date Format should be mm/dd/yyyy
         /// </summary>
         /// <response code="400">Provided State Name or Date is invalid</response>
         /// <response code="404">No Data found for the provided input</response>
@@ -193,7 +193,7 @@ namespace diseasedataprovider.Controllers
         }
 
         /// <summary>
-        /// Gets cases count per day for everyday since inception of the Virus in a particular state
+        /// Gets cases count per day since inception of the Virus in a particular state
         /// </summary>
         /// <response code="400">Provided State Name is invalid</response>
         /// <response code="404">No Data found for the provided input</response>
@@ -222,7 +222,7 @@ namespace diseasedataprovider.Controllers
         }
 
         /// <summary>
-        /// Gets cumulative sum of cases per day for everyday since inception of the Virus in a particular state
+        /// Gets cumulative sum of cases per day since inception of the Virus in a particular state
         /// </summary>
         /// <response code="400">Provided State Name is invalid</response>
         /// <response code="404">No Data found for the provided input</response>
@@ -251,7 +251,7 @@ namespace diseasedataprovider.Controllers
         }
 
         /// <summary>
-        /// Gets cases per day for A date range in a particular state
+        /// Gets cases per day for date range in a particular state. Date Format should be mm/dd/yyyy
         /// </summary>
         /// <response code="400">Provided data is invalid</response>
         /// <response code="404">No Data found for the provided input</response>

@@ -15,7 +15,7 @@ public class SQLDataHelper : IDataHelper
     {
         try {
             var _dataset = new DataSet();
-            using (SqlConnection connection = new SqlConnection(get_connection_string(_configuration["sql_server_default_database"])))
+            using (SqlConnection connection = new SqlConnection(get_connection_string(_configuration["sqlServerDefaultDatabase"])))
             {
                 connection.Open();
                 using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
@@ -33,9 +33,9 @@ public class SQLDataHelper : IDataHelper
     private string get_connection_string(string database_name)
     {
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-        builder.DataSource = _configuration["sql_server_url"];
-        builder.UserID = _configuration["sql_server_username"];
-        builder.Password = _configuration["sql_server_password"];
+        builder.DataSource = _configuration["sqlServerUrl"];
+        builder.UserID = _configuration["sqlServerUsername"];
+        builder.Password = _configuration["sqlServerPassword"];
         builder.InitialCatalog = database_name;
         return builder.ConnectionString;
     }
