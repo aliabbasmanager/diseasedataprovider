@@ -241,5 +241,105 @@ namespace DiseaseDataProvider.DataLayer
             }
             return data;
         }
+
+        public int get_total_death_count_by_date(DateTime date = default(DateTime), string state_name = "")
+        {
+            var count = 0;
+            try
+            {
+                // Provide Current Date Value if Date is empty
+                if (date == default(DateTime))
+                {
+                    date = DateTime.Now;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("select sum(death) from covid19_india_stage where CONVERT(date, date) = '");
+                sb.Append(date.Date.ToString("d"));
+                sb.Append("'");
+
+                if (!string.IsNullOrWhiteSpace(state_name))
+                {
+                    sb.Append(" and state_name='");
+                    sb.Append(state_name);
+                    sb.Append("'");
+                }
+
+                String sql = sb.ToString();
+                var case_data = _sqlDataHelper.executeDataQuery(sql);
+                if (string.IsNullOrEmpty(case_data.Tables[0].Rows[0][0].ToString()))
+                {
+                    throw new DataException("No Data Found");
+                }
+                count = Convert.ToInt32(case_data.Tables[0].Rows[0][0]);
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            return count;
+        }
+
+        public int get_total_cured_count_by_date(DateTime date = default(DateTime), string state_name = "")
+        {
+            var count = 0;
+            try
+            {
+                // Provide Current Date Value if Date is empty
+                if (date == default(DateTime))
+                {
+                    date = DateTime.Now;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("select sum(cured) from covid19_india_stage where CONVERT(date, date) = '");
+                sb.Append(date.Date.ToString("d"));
+                sb.Append("'");
+
+                if (!string.IsNullOrWhiteSpace(state_name))
+                {
+                    sb.Append(" and state_name='");
+                    sb.Append(state_name);
+                    sb.Append("'");
+                }
+
+                String sql = sb.ToString();
+                var case_data = _sqlDataHelper.executeDataQuery(sql);
+                if (string.IsNullOrEmpty(case_data.Tables[0].Rows[0][0].ToString()))
+                {
+                    throw new DataException("No Data Found");
+                }
+                count = Convert.ToInt32(case_data.Tables[0].Rows[0][0]);
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            return count;
+        }
+
+        public Dictionary<string, string> get_historical_case_data_all_states()
+        {
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            try
+            {
+                var query = "select CAST(date AS DATE), sum(confirmed_cases_ind + confirmed_cases_int)  from covid19_india_stage group by CAST(date AS DATE)";
+                var case_data = _sqlDataHelper.executeDataQuery(query);
+                if (string.IsNullOrEmpty(case_data.Tables[0].Rows[0][0].ToString()))
+                {
+                    throw new DataException("No States Found");
+                }
+                foreach (DataRow row in case_data.Tables[0].Rows)
+                {
+                    data.Add(Convert.ToDateTime(row[0]).Date.ToString("d"), row[1].ToString());
+                }
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            return data;
+        }
+
     }
 }

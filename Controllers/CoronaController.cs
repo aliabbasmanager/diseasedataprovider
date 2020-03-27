@@ -139,6 +139,92 @@ namespace diseasedataprovider.Controllers
         }
 
         /// <summary>
+        /// Gets Total Deaths in India on a particular date. Date Format should be mm/dd/yyyy
+        /// </summary>
+        /// <response code="404">No Data found for this date</response>
+        /// <response code="400">Provided Date is invalid</response>
+        [HttpGet]
+        [Route("GetTotalDeathsByDate")]
+        public ActionResult<object> GetTotalDeathCountByDate(string date)
+        {
+            int count = 0;
+            DateTime dt = default(DateTime);
+            try
+            {
+                dt = string.IsNullOrWhiteSpace(date) ? DateTime.Now : Convert.ToDateTime(date);
+                count = _stateDataProvider.get_total_death_count_by_date(dt);
+            }
+            catch (SqlException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while connecting to Database");
+            }
+            catch (FormatException)
+            {
+                return BadRequest("Date Provided is invalid");
+            }
+            catch (DataException)
+            {
+                return NotFound("No Data Found for the Date " + dt.Date.ToString("d"));
+            }
+            return Json(new { date = dt.Date.ToString("d"), total_deaths_in_india = count });
+        }
+
+        /// <summary>
+        /// Gets Total Cured in India on a particular date. Date Format should be mm/dd/yyyy
+        /// </summary>
+        /// <response code="404">No Data found for this date</response>
+        /// <response code="400">Provided Date is invalid</response>
+        [HttpGet]
+        [Route("GetTotalCuredByDate")]
+        public ActionResult<object> GetTotalCuredCountByDate(string date)
+        {
+            int count = 0;
+            DateTime dt = default(DateTime);
+            try
+            {
+                dt = string.IsNullOrWhiteSpace(date) ? DateTime.Now : Convert.ToDateTime(date);
+                count = _stateDataProvider.get_total_cured_count_by_date(dt);
+            }
+            catch (SqlException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while connecting to Database");
+            }
+            catch (FormatException)
+            {
+                return BadRequest("Date Provided is invalid");
+            }
+            catch (DataException)
+            {
+                return NotFound("No Data Found for the Date " + dt.Date.ToString("d"));
+            }
+            return Json(new { date = dt.Date.ToString("d"), total_cured_in_india = count });
+        }
+
+        /// <summary>
+        /// Gets Historical case data for all states till now
+        /// </summary>
+        /// <response code="404">No Data found in DB</response>
+        [HttpGet]
+        [Route("GetHistoricalCaseDataAllStates")]
+        public ActionResult<object> getHistoricalCaseDataAllStates()
+        {
+            Dictionary<string,string> data = new Dictionary<string,string>();
+            try
+            {
+                data = _stateDataProvider.get_historical_case_data_all_states();
+            }
+            catch (SqlException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while connecting to Database");
+            }
+            catch (DataException)
+            {
+                return NotFound("Data not found");
+            }
+            return Json(data );
+        }
+
+        /// <summary>
         /// Gets Total Cases in India on a particular date for a particular state. Date Format should be mm/dd/yyyy
         /// </summary>
         /// <response code="400">Provided State Name or Date is invalid</response>
